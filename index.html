@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Callisto | Celestial Fine Jewelry</title>
+    <meta name="description" content="Handcrafted fine jewelry inspired by the cosmos. Gold, Diamonds, and Stardust.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Lato:wght@300;400;700&family=Italiana&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* =========================================
+           1. CORE VARIABLES & RESET
+           ========================================= */
+        :root {
+            --c-void: #050505;
+            --c-charcoal: #0F0F0F;
+            --c-gold: #D4AF37;
+            --c-gold-light: #F4E285;
+            --c-gold-dim: #8A6E2F;
+            --c-diamond: #E6F2F5;
+            --c-text: #F0F0F0;
+            --c-text-muted: #888888;
+            
+            --f-heading: 'Cinzel', serif;
+            --f-elegant: 'Italiana', serif;
+            --f-body: 'Lato', sans-serif;
+
+            --trans-fast: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --trans-smooth: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            
+            --glass: rgba(20, 20, 20, 0.6);
+            --glass-border: rgba(212, 175, 55, 0.15);
+            --glass-blur: blur(12px);
+
+            --container: 1400px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background-color: var(--c-void);
+            color: var(--c-text);
+            font-family: var(--f-body);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--c-void); }
+        ::-webkit-scrollbar-thumb { background: var(--c-gold-dim); border-radius: 3px; }
+
+        /* Typography */
+        h1, h2, h3, h4 { font-family: var(--f-heading); font-weight: 400; letter-spacing: 2px; }
+        
+        .text-gold { 
+            background: linear-gradient(135deg, var(--c-gold-light), var(--c-gold), var(--c-gold-dim));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .section-title {
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .section-subtitle {
+            font-family: var(--f-body);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--c-gold);
+            text-align: center;
+            display: block;
+            margin-bottom: 60px;
+        }
+
+        /* Custom Cursor */
+        #cursor {
+            position: fixed;
+            top: 0; left: 0;
+            width: 10px; height: 10px;
+            background: var(--c-gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+            mix-blend-mode: difference;
+        }
+        
+        #cursor-follower {
+            position: fixed;
+            top: 0; left: 0;
+            width: 40px; height: 40px;
+            border: 1px solid var(--c-gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: left 0.1s, top 0.1s, width 0.3s, height 0.3s;
+        }
+
+        body.hovered #cursor { width: 20px; height: 20px; opacity: 0.5; }
+        body.hovered #cursor-follower { width: 60px; height: 60px; border-color: var(--c-diamond); }
+
+        /* =========================================
+           2. UTILITIES & COMPONENTS
+           ========================================= */
+        .container {
+            max-width: var(--container);
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: transparent;
+            border: 1px solid var(--c-gold);
+            color: var(--c-gold);
+            font-family: var(--f-body);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            transition: var(--trans-fast);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 0; height: 100%;
+            background: var(--c-gold);
+            z-index: -1;
+            transition: var(--trans-fast);
+        }
+
+        .btn:hover { color: var(--c-void); }
+        .btn:hover::before { width: 100%; }
+
+        .btn-filled {
+            background: var(--c-gold);
+            color: var(--c-void);
+        }
+        .btn-filled:hover {
+            background: var(--c-diamond);
+            border-color: var(--c-diamond);
+        }
+
+        /* Loader */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--c-void);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 1s ease;
+        }
+
+        .diamond-loader {
+            width: 80px; height: 80px;
+            border: 2px solid var(--c-gold);
+            transform: rotate(45deg);
+            animation: breathe 2s infinite ease-in-out;
+            position: relative;
+        }
+
+        .diamond-inner {
+            position: absolute;
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px solid var(--c-diamond);
+            animation: innerSpin 4s infinite linear;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: rotate(45deg) scale(1); box-shadow: 0 0 10px var(--c-gold-dim); }
+            50% { transform: rotate(45deg) scale(1.1); box-shadow: 0 0 30px var(--c-gold); }
+        }
+
+        @keyframes innerSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(90deg); }
+        }
+
+        /* =========================================
+           3. NAVBAR
+           ========================================= */
+        nav {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 25px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: var(--trans-fast);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        nav.scrolled {
+            background: rgba(5, 5, 5, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 50px;
+        }
+
+        .logo {
+            font-family: var(--f-elegant);
+            font-size: 2rem;
+            color: #fff;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-item {
+            font-family: var(--f-body);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+            position: relative;
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; left: 0; width: 0; height: 1px;
+            background: var(--c-gold);
+            transition: var(--trans-fast);
+        }
+
+        .nav-item:hover::after { width: 100%; }
+
+        .nav-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .cart-icon-wrap {
+            position: relative;
+            font-size: 1.2rem;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px; right: -8px;
+            background: var(--c-gold);
+            color: var(--c-void);
+            font-size: 0.7rem;
+            font-weight: bold;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* =========================================
+           4. HERO SECTION
+           ========================================= */
+        #hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #hero-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+        }
+
+        .hero-content {
+            z-index: 2;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 6rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.5s forwards;
+        }
+
+        .hero-subtitle {
+            font-family: var(--f-elegant);
+            font-size: 1.5rem;
+            color: var(--c-diamond);
+            letter-spacing: 3px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.8s forwards;
+        }
+
+        .hero-btn-group {
+            opacity: 0;
+            animation: fadeInUp 1s ease 2.1s forwards;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--c-gold);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
+            40% {transform: translateX(-50%) translateY(-10px);}
+            60% {transform: translateX(-50%) translateY(-5px);}
+        }
+
+        /* =========================================
+           5. FEATURED COLLECTION
+           ========================================= */
+        #collections {
+            padding: 120px 0;
+            background: var(--c-charcoal);
+        }
+
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .collection-card {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .collection-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 1s ease;
+        }
+
+        .collection-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px;
+            align-items: center;
+        }
+
+        .collection-card:hover .collection-img { transform: scale(1.1); }
+
+        .collection-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        /* =========================================
+           6. SHOP PRODUCTS (3D Cards)
+           ========================================= */
+        #shop {
+            padding: 120px 0;
+        }
+
+        .filter-nav {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: none;
+            color: var(--c-text-muted);
+            font-family: var(--f-body);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .filter-btn.active { color: var(--c-gold); border-bottom: 1px solid var(--c-gold); }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .product-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            position: relative;
+            transition: var(--trans-smooth);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .product-card:hover {
+            border-color: var(--c-gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+        }
+
+        .product-image-wrapper {
+            width: 100%;
+            height: 350px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .product-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: 0.5s ease;
+        }
+
+        .product-card:hover .product-img { transform: scale(1.05); }
+
+        .product-info {
+            text-align: center;
+        }
+
+        .product-name {
+            font-family: var(--f-elegant);
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .product-price {
+            color: var(--c-gold);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.7rem;
+            transition: 0.3s;
+        }
+
+        .add-btn:hover {
+            background: var(--c-gold);
+            color: #000;
+            border-color: var(--c-gold);
+        }
+
+        /* =========================================
+           7. CART SIDEBAR (Off-canvas)
+           ========================================= */
+        #cart-sidebar {
+            position: fixed;
+            top: 0; right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: #111;
+            z-index: 2000;
+            transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--c-gold-dim);
+        }
+
+        #cart-sidebar.open { right: 0; }
+
+        .cart-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-title { font-size: 1.2rem; color: var(--c-gold); }
+        .close-cart { font-size: 1.5rem; color: #fff; transition: 0.3s; }
+        .close-cart:hover { color: var(--c-gold); transform: rotate(90deg); }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 15px;
+        }
+
+        .cart-item-img {
+            width: 70px; height: 70px;
+            object-fit: cover;
+            border: 1px solid #333;
+        }
+
+        .cart-item-details { flex: 1; }
+        .cart-item-name { font-size: 0.9rem; color: #fff; margin-bottom: 5px; }
+        .cart-item-price { color: var(--c-gold); font-size: 0.9rem; }
+        
+        .cart-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .qty-btn {
+            background: #222;
+            border: none;
+            color: #fff;
+            width: 25px; height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-footer {
+            padding: 30px;
+            border-top: 1px solid #222;
+            background: #0d0d0d;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: #25D366; /* WhatsApp Green */
+            color: #fff;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkout-btn:hover { background: #128C7E; }
+
+        /* Overlay */
+        #overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1500;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.5s;
+        }
+        #overlay.active { opacity: 1; pointer-events: all; }
+
+        /* =========================================
+           8. CHECKOUT MODAL
+           ========================================= */
+        #checkout-modal {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: #111;
+            border: 1px solid var(--c-gold);
+            width: 90%; max-width: 500px;
+            padding: 40px;
+            z-index: 3000;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        #checkout-modal.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            background: #050505;
+            border: 1px solid #333;
+            color: #fff;
+            margin-bottom: 15px;
+            font-family: var(--f-body);
+        }
+
+        .modal-input:focus { outline: none; border-color: var(--c-gold); }
+
+        /* =========================================
+           9. FOOTER
+           ========================================= */
+        footer {
+            background: #000;
+            padding: 80px 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: var(--f-elegant);
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .socials a { color: #fff; font-size: 1.2rem; margin: 0 10px; transition: 0.3s; }
+        .socials a:hover { color: var(--c-gold); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 3.5rem; }
+            .collection-grid { grid-template-columns: 1fr; }
+            .products-grid { grid-template-columns: 1fr 1fr; }
+            #cart-sidebar { width: 100%; right: -100%; }
+            nav { padding: 20px; }
+            .nav-links { display: none; } /* Simplified for demo */
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="diamond-loader">
+            <div class="diamond-inner"></div>
+        </div>
+        <div style="margin-top: 30px; letter-spacing: 5px; font-family: var(--f-heading);">CALLISTO</div>
+    </div>
+
+    <div id="cursor"></div>
+    <div id="cursor-follower"></div>
+
+    <nav id="navbar">
+        <a href="#" class="logo">Callisto</a>
+        <ul class="nav-links">
+            <li><a href="#hero" class="nav-item">Home</a></li>
+            <li><a href="#collections" class="nav-item">Collections</a></li>
+            <li><a href="#shop" class="nav-item">Jewelry</a></li>
+            <li><a href="#story" class="nav-item">Our Story</a></li>
+        </ul>
+        <div class="nav-icons">
+            <a href="#" class="nav-item cart-icon-wrap hover-trigger" onclick="toggleCart()">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="cart-count" id="cart-count">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <section id="hero">
+        <canvas id="hero-canvas"></canvas>
+        <div class="hero-content">
+            <h1 class="hero-title text-gold">Celestial<br>Elegance</h1>
+            <p class="hero-subtitle">Fine Jewelry Forged from Stardust</p>
+            <div class="hero-btn-group">
+                <a href="#shop" class="btn btn-filled hover-trigger">Shop Collection</a>
+            </div>
+        </div>
+        <div class="scroll-down">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <section id="collections">
+        <div class="container">
+            <span class="section-subtitle">Curated Sets</span>
+            <h2 class="section-title">Cosmic Collections</h2>
+            <div class="collection-grid">
+                <div class="collection-card hover-trigger">
+                    <img src="https://images.unsplash.com/photo-1599643478518-17488fbbcd75?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="collection-img" alt="Gold">
+                    <div class="collection-overlay">
+                        <h3 class="collection-title">Solar Gold</h3>
+                        <a href="#shop" class="btn">View</a>
+                    </div>
+                </div>
+                <div class="collection-card hover-trigger">
+                    <img src="https://images.unsplash.com/photo-1573408301185-9146fe634ad0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="collection-img" alt="Diamond">
+                    <div class="collection-overlay">
+                        <h3 class="collection-title">Lunar Diamonds</h3>
+                        <a href="#shop" class="btn">View</a>
+                    </div>
+                </div>
+                <div class="collection-card hover-trigger">
+                    <img src="https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="collection-img" alt="Pearl">
+                    <div class="collection-overlay">
+                        <h3 class="collection-title">Nebula Pearls</h3>
+                        <a href="#shop" class="btn">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="shop">
+        <div class="container">
+            <span class="section-subtitle">The Treasury</span>
+            <h2 class="section-title">Fine Jewelry</h2>
+            
+            <div class="filter-nav">
+                <button class="filter-btn active" onclick="filterProducts('all')">All</button>
+                <button class="filter-btn" onclick="filterProducts('ring')">Rings</button>
+                <button class="filter-btn" onclick="filterProducts('necklace')">Necklaces</button>
+                <button class="filter-btn" onclick="filterProducts('earring')">Earrings</button>
+            </div>
+
+            <div class="products-grid" id="product-container">
+                </div>
+        </div>
+    </section>
+
+    <div id="overlay" onclick="toggleCart()"></div>
+    <div id="cart-sidebar">
+        <div class="cart-header">
+            <span class="cart-title">Your Treasury</span>
+            <span class="close-cart hover-trigger" onclick="toggleCart()">&times;</span>
+        </div>
+        <div class="cart-items" id="cart-items-container">
+            </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total</span>
+                <span id="cart-total-price">$0</span>
+            </div>
+            <button class="checkout-btn hover-trigger" onclick="openCheckout()">
+                <i class="fab fa-whatsapp"></i> Checkout via WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <div id="checkout-modal">
+        <h3 class="text-gold" style="margin-bottom: 20px;">Finalize Request</h3>
+        <p style="color: #aaa; margin-bottom: 20px; font-size: 0.9rem;">Enter your details to generate your order link for our concierge.</p>
+        <form onsubmit="processWhatsAppCheckout(event)">
+            <input type="text" id="cust-name" class="modal-input" placeholder="Your Full Name" required>
+            <input type="text" id="cust-address" class="modal-input" placeholder="Delivery City/Area" required>
+            <button type="submit" class="btn btn-filled" style="width: 100%;">Proceed to WhatsApp</button>
+            <button type="button" class="btn" style="width: 100%; margin-top: 10px; border:none; color: #888;" onclick="closeCheckout()">Cancel</button>
+        </form>
+    </div>
+
+    <footer>
+        <div class="container">
+            <span class="footer-logo">CALLISTO</span>
+            <div class="footer-links">
+                <a href="#" class="nav-item">Privacy Policy</a>
+                <a href="#" class="nav-item">Terms of Service</a>
+                <a href="#" class="nav-item">Care Guide</a>
+            </div>
+            <div class="socials">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-pinterest"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+            <p style="color: #444; margin-top: 30px; font-size: 0.8rem;">&copy; 2026 Callisto Jewelry. Handcrafted for the stars.</p>
+        </div>
+    </footer>
+
+    <script>
+        /* =========================================
+           1. DATA: PRODUCTS
+           ========================================= */
+        const products = [
+            {
+                id: 1,
+                name: "Starlight Solitaire",
+                price: 1200,
+                category: "ring",
+                image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 2,
+                name: "Moonstone Drop",
+                price: 850,
+                category: "necklace",
+                image: "https://images.unsplash.com/photo-1599643478518-17488fbbcd75?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 3,
+                name: "Eclipse Hoops",
+                price: 450,
+                category: "earring",
+                image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 4,
+                name: "Constellation Band",
+                price: 980,
+                category: "ring",
+                image: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 5,
+                name: "Nebula Pendant",
+                price: 1500,
+                category: "necklace",
+                image: "https://images.unsplash.com/photo-1602751584552-8ba420552259?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 6,
+                name: "Saturn Gold Studs",
+                price: 320,
+                category: "earring",
+                image: "https://images.unsplash.com/photo-1630019852942-e5b1216f3165?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+            }
+        ];
+
+        let cart = [];
+
+        /* =========================================
+           2. UI LOGIC: LOADER & CURSOR
+           ========================================= */
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 1000);
+            }, 1500);
+            renderProducts(products);
+        });
+
+        const cursor = document.getElementById('cursor');
+        const follower = document.getElementById('cursor-follower');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                follower.style.left = e.clientX + 'px';
+                follower.style.top = e.clientY + 'px';
+            }, 50);
+        });
+
+        // Hover effects for cursor
+        document.querySelectorAll('a, button, .hover-trigger').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('hovered'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('hovered'));
+        });
+
+        // Navbar Scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if(window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+
+        /* =========================================
+           3. PRODUCT RENDER LOGIC
+           ========================================= */
+        const container = document.getElementById('product-container');
+
+        function renderProducts(data) {
+            container.innerHTML = '';
+            data.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card hover-trigger';
+                card.innerHTML = `
+                    <div class="product-image-wrapper">
+                        <img src="${product.image}" class="product-img" alt="${product.name}">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <span class="product-price">$${product.price}</span>
+                        <button class="add-btn" onclick="addToCart(${product.id})">Add to Treasury</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            // Re-bind hover listeners for new elements
+            document.querySelectorAll('.hover-trigger').forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('hovered'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('hovered'));
+            });
+        }
+
+        function filterProducts(cat) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if(cat === 'all') {
+                renderProducts(products);
+            } else {
+                const filtered = products.filter(p => p.category === cat);
+                renderProducts(filtered);
+            }
+        }
+
+        /* =========================================
+           4. CART LOGIC
+           ========================================= */
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            const existing = cart.find(item => item.id === id);
+
+            if(existing) {
+                existing.qty++;
+            } else {
+                cart.push({...product, qty: 1});
+            }
+            updateCartUI();
+            toggleCart(); // Open cart on add
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartUI();
+        }
+
+        function changeQty(id, change) {
+            const item = cart.find(i => i.id === id);
+            if(item) {
+                item.qty += change;
+                if(item.qty <= 0) removeFromCart(id);
+                else updateCartUI();
+            }
+        }
+
+        function updateCartUI() {
+            const cartContainer = document.getElementById('cart-items-container');
+            const totalEl = document.getElementById('cart-total-price');
+            const countEl = document.getElementById('cart-count');
+            
+            cartContainer.innerHTML = '';
+            let total = 0;
+            let count = 0;
+
+            cart.forEach(item => {
+                total += item.price * item.qty;
+                count += item.qty;
+                
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `
+                    <img src="${item.image}" class="cart-item-img">
+                    <div class="cart-item-details">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">$${item.price}</div>
+                        <div class="cart-controls">
+                            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+                            <span>${item.qty}</span>
+                            <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+                            <span style="margin-left:auto; cursor:pointer; font-size:0.7rem;" onclick="removeFromCart(${item.id})">Remove</span>
+                        </div>
+                    </div>
+                `;
+                cartContainer.appendChild(div);
+            });
+
+            if(cart.length === 0) {
+                cartContainer.innerHTML = '<p style="color:#666; text-align:center; margin-top:20px;">Your treasury is empty.</p>';
+            }
+
+            totalEl.innerText = '$' + total;
+            countEl.innerText = count;
+        }
+
+        /* =========================================
+           5. WHATSAPP CHECKOUT LOGIC
+           ========================================= */
+        function openCheckout() {
+            if(cart.length === 0) {
+                alert("Please add items to your cart first.");
+                return;
+            }
+            document.getElementById('checkout-modal').classList.add('active');
+            document.getElementById('overlay').classList.add('active'); // Ensure overlay stays
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkout-modal').classList.remove('active');
+        }
+
+        function processWhatsAppCheckout(e) {
+            e.preventDefault();
+            const name = document.getElementById('cust-name').value;
+            const address = document.getElementById('cust-address').value;
+            
+            // Build the message
+            let message = `*NEW ORDER FROM CALLISTO*\n\n`;
+            message += `*Customer:* ${name}\n`;
+            message += `*Location:* ${address}\n\n`;
+            message += `*Order Details:*\n`;
+            
+            let total = 0;
+            cart.forEach(item => {
+                const sub = item.price * item.qty;
+                total += sub;
+                message += `- ${item.name} (x${item.qty}): $${sub}\n`;
+            });
+            
+            message += `\n*TOTAL: $${total}*`;
+            message += `\n\nPlease verify stock and payment details.`;
+
+            // Encode and Open
+            const phone = "919641609686"; // Replace with merchant number
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            
+            window.open(url, '_blank');
+            closeCheckout();
+            toggleCart(); // Close sidebar
+            cart = []; // Optional: Clear cart
+            updateCartUI();
+        }
+
+        /* =========================================
+           6. CANVAS BACKGROUND (Gold Dust)
+           ========================================= */
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2;
+                this.speedY = Math.random() * 0.5 - 0.2;
+                this.speedX = Math.random() * 0.5 - 0.2;
+                this.alpha = Math.random();
+            }
+            update() {
+                this.y -= this.speedY;
+                this.x += this.speedX;
+                if(this.y < 0) this.y = height;
+                if(this.x > width) this.x = 0;
+                this.alpha += (Math.random() - 0.5) * 0.05;
+                if(this.alpha < 0) this.alpha = 0;
+                if(this.alpha > 1) this.alpha = 1;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(212, 175, 55, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function init() {
+            resize();
+            for(let i=0; i<100; i++) particles.push(new Particle());
+            animate();
+        }
+
+        function animate() {
+            ctx.clearRect(0,0,width,height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        init();
+
+    </script>
+</body>
+</html>
